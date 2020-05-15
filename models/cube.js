@@ -6,7 +6,8 @@ class CubeModel {
     }
 
     insert(newCube) {
-        const newIndex = this.data.lastIndex++;
+        this.data.lastIndex++
+        const newIndex = this.data.lastIndex;
         const cube = { id: newIndex, ...newCube };
         const newData = {
             lastIndex: newIndex,
@@ -61,6 +62,10 @@ class CubeModel {
 
     getAll() {
         return Promise.resolve(this.data.entities);
+    }
+
+    create(name, image, desc, difficulty) {
+        return { name, image, desc, difficulty };
     }
 }
 
