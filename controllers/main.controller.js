@@ -22,8 +22,16 @@ function notFound(req, res, next) {
     res.render(path.resolve('./views/404.hbs'));
 }
 
-function create(req, res, next) {
+function getCreate(req, res, next) {
     res.render(path.resolve('./views/create.hbs'));
+}
+
+function postCreate(req, res, next) {
+    const { name = null, image = null, desc = null, difficulty = null } = req.body;
+    const newCube = cubeModel.create(name, image, desc, difficulty);
+    cubeModel.insert(newCube).then(cube => {
+        res.redirect('/');
+    })
 }
 
 function about(req, res, next) {
@@ -35,5 +43,6 @@ module.exports = {
     details,
     notFound,
     about,
-    create
+    postCreate,
+    getCreate
 };
