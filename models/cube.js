@@ -57,7 +57,7 @@ class CubeModel {
     }
 
     getOne(id) {
-        return Promise.resolve(this.data.entities.find(cube => cube.id === id));
+        return this.find(cube => cube.id === id);
     }
 
     getAll() {
@@ -66,6 +66,10 @@ class CubeModel {
 
     create(name, image, desc, difficulty) {
         return { name, image, desc, difficulty };
+    }
+
+    find(predicate) {
+        return Promise.resolve(this.data.entities.filter(predicate));
     }
 }
 
