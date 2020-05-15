@@ -1,8 +1,28 @@
 const path = require('path');
 const cubeModel = require('./../models/cube');
 
-function index(req, res, next) {
+function getIndex(req, res, next) {
     cubeModel.getAll().then(cubes => {
+        res.render(path.resolve('./views/index.hbs'), { cubes });
+    }).catch(next);
+}
+
+function postIndex(req, res, next) {
+    let { search, from, to } = req.body;
+
+    const searchFn = item => {
+        from === '' ? from = 0 : from;
+        to === '' ? to = 6 : to;
+
+        
+
+        if (item.name.includes(search) && item.difficulty >= from && item.difficulty <= to) {
+            return true;
+        }
+        return false;
+    }
+
+    cubeModel.find(searchFn).then(cubes => {
         res.render(path.resolve('./views/index.hbs'), { cubes });
     }).catch(next);
 }
@@ -39,7 +59,8 @@ function about(req, res, next) {
 }
 
 module.exports = {
-    index,
+    getIndex,
+    postIndex,
     details,
     notFound,
     about,
