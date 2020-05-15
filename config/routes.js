@@ -1,5 +1,6 @@
-// TODO: Require Controllers...
+const mainCotroller = require('./../controllers/main.controller');
 
 module.exports = (app) => {
-    // TODO...
+    app.use('/details/:id', mainCotroller.details);
+    app.use('/', mainCotroller.index);
 };
