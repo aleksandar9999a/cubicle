@@ -9,20 +9,10 @@ function getIndex(req, res, next) {
 
 function postIndex(req, res, next) {
     let { search, from, to } = req.body;
+    from === '' ? from = 0 : Number(from);
+    to === '' ? to = 6 : Number(to);
 
-    const searchFn = item => {
-        from === '' ? from = 0 : from;
-        to === '' ? to = 6 : to;
-
-
-
-        if (item.name.includes(search) && item.difficulty >= from && item.difficulty <= to) {
-            return true;
-        }
-        return false;
-    }
-
-    cubeModel.find().then(cubes => {
+    cubeModel.find().where('name').equals(search).where('difficulty').gt(from).lt(to).then(cubes => {
         res.render(path.resolve('./views/index.hbs'), { cubes });
     }).catch(next);
 }
