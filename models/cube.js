@@ -57,7 +57,7 @@ class CubeModel {
     }
 
     getOne(id) {
-        return this.find(cube => cube.id === id);
+        return this.find(cube => cube.id === id).then(cubes => cubes[0] || null);
     }
 
     getAll() {
