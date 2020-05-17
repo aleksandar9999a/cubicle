@@ -1,6 +1,5 @@
 const path = require('path');
-const cubeModel = require('./../models/cube');
-const accessoriesModel = require('./../models/accessories');
+const { cubeModel, accessoriesModel } = require('./../models/index');
 
 function getIndex(req, res, next) {
     cubeModel.find().then(cubes => {
