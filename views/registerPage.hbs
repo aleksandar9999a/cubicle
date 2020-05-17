@@ -35,6 +35,14 @@
           <label for="repeatPassword">Re-Password</label>
           <input type="password" id="repeatPassword" name="repeatPassword">
           <input type="submit" value="Register">
+
+          {{#if errors.username}}
+          <div class="error">{{ errors.username }}</div>
+          {{/if}}
+          
+          {{#if errors.repeatPassword}}
+          <div class="error">{{ errors.repeatPassword }}</div>
+          {{/if}}
         </form>
       </div>
     </main>
