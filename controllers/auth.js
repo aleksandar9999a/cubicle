@@ -1,5 +1,7 @@
 const path = require('path');
 const { userModel } = require('../models');
+const utils = require('./../utils');
+const authCookie = 'auth_cookie';
 
 function getLogin(req, res, next) {
     res.render(path.resolve('./views/loginPage.hbs'));
@@ -10,7 +12,19 @@ function getRegister(req, res, next) {
 }
 
 function postLogin(req, res, next) {
+    const { username, password } = req.body;
+    userModel.findOne({ username })
+        .then(user => Promise.all([user, user.matchPassword(password)]))
+        .then(([user, match]) => {
+            if (!match) {
+                res.render(path.resolve('./views/loginPage.hbs'), { errors: { message: 'Wrong password or username!' } });
+                return;
+            }
 
+            const token = utils.jwt.createToken({id: user.id});
+            res.cookie(authCookie, token).redirect('/');
+        })
+        .catch(next)
 }
 
 function postRegister(req, res, next) {
@@ -30,7 +44,7 @@ function postRegister(req, res, next) {
         .catch(err => {
             if (err.code === 11000) {
                 res.render(
-                    path.resolve('./views/registerPage.hbs'), 
+                    path.resolve('./views/registerPage.hbs'),
                     { errors: { username: 'Username already exist!' } }
                 );
                 return;
