@@ -20,7 +20,7 @@ function postIndex(req, res, next) {
 
 function details(req, res, next) {
     const id = req.params.id;
-    cubeModel.findById(id).then(cube => {
+    cubeModel.findById(id).populate('accessories').then(cube => {
         if (!cube) {
             res.redirect('/404');
             return;
@@ -41,7 +41,7 @@ function postCreate(req, res, next) {
     const { name = null, image = null, desc = null, difficulty = null } = req.body;
     cubeModel.create({ name, image, desc, difficulty }).then(cube => {
         res.redirect('/');
-    });
+    }).catch(next);
 }
 
 function getAccessories(req, res, next) {
@@ -52,7 +52,30 @@ function postAccessories(req, res, next) {
     const { name = null, image = null, desc = null } = req.body;
     accessoriesModel.create({ name, image, desc }).then(() => {
         res.redirect('/');
-    });
+    }).catch(next);
+}
+
+function getAttachAccessory(req, res, next) {
+    const { id: cubeId } = req.params;
+    cubeModel
+        .findById(cubeId)
+        .then(cube => Promise.all([cube, accessoriesModel.find({ cubes: { $nin: cubeId } })]))
+        .then(([cube, filterAccessories]) => {
+            res.render('./../../views/attachAccessory.hbs', {
+                cube,
+                accessories: filterAccessories.length > 0 ? filterAccessories : null
+            });
+        })
+        .catch(next);
+}
+
+function postAttachAccessory(req, res, next) {
+    const { id } = req.params;
+    const { accessory: accessoryId } = req.body;
+    Promise.all([
+        cubeModel.update({ _id: id }, { $push: { accessories: accessoryId } }),
+        accessoriesModel.update({ _id: accessoryId }, { $push: { cubes: id } })
+    ]).then(() => { res.redirect('/'); }).catch(next);
 }
 
 function about(req, res, next) {
@@ -68,5 +91,7 @@ module.exports = {
     postCreate,
     getCreate,
     postAccessories,
-    getAccessories
+    getAccessories,
+    getAttachAccessory,
+    postAttachAccessory
 };
