@@ -10,7 +10,9 @@ module.exports = (app) => {
     app.post('/create', mainCotroller.postCreate);
     app.get('/create', mainCotroller.getCreate);
     app.get('/about', mainCotroller.about);
+    app.post('/login', authCotroller.postLogin);
     app.get('/login', authCotroller.getLogin);
+    app.post('/register', authCotroller.postRegister);
     app.get('/register', authCotroller.getRegister);
     app.use('/404', mainCotroller.notFound);
     app.post('/', mainCotroller.postIndex);
