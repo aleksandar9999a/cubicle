@@ -28,9 +28,10 @@ function postRegister(req, res, next) {
             res.redirect('/login');
         })
         .catch(err => {
-            if (err.message === '') {
+            if (err.code === 11000) {
                 res.render(
-                    path.resolve('./views/registerPage.hbs'), { errors: { username: 'Username already exist!' } }
+                    path.resolve('./views/registerPage.hbs'), 
+                    { errors: { username: 'Username already exist!' } }
                 );
             }
             next(err);
