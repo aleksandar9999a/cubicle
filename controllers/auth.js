@@ -33,6 +33,7 @@ function postRegister(req, res, next) {
                     path.resolve('./views/registerPage.hbs'), 
                     { errors: { username: 'Username already exist!' } }
                 );
+                return;
             }
             next(err);
         });
