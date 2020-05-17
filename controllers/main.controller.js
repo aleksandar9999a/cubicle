@@ -1,5 +1,6 @@
 const path = require('path');
 const cubeModel = require('./../models/cube');
+const accessoriesModel = require('./../models/accessories');
 
 function getIndex(req, res, next) {
     cubeModel.find().then(cubes => {
@@ -43,6 +44,17 @@ function postCreate(req, res, next) {
     });
 }
 
+function getAccessories(req, res, next) {
+    res.render(path.resolve('./views/createAccessory.hbs'));
+}
+
+function postAccessories(req, res, next) {
+    const { name = null, image = null, desc = null } = req.body;
+    accessoriesModel.create({ name, image, desc }).then(() => {
+        res.redirect('/');
+    });
+}
+
 function about(req, res, next) {
     res.render(path.resolve('./views/about.hbs'));
 }
@@ -54,5 +66,7 @@ module.exports = {
     notFound,
     about,
     postCreate,
-    getCreate
+    getCreate,
+    postAccessories,
+    getAccessories
 };

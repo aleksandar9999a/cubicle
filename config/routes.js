@@ -6,6 +6,8 @@ module.exports = (app) => {
     app.use('/404', mainCotroller.notFound);
     app.post('/create', mainCotroller.postCreate);
     app.use('/create', mainCotroller.getCreate);
+    app.post('/addAccessory', mainCotroller.postAccessories);
+    app.use('/addAccessory', mainCotroller.getAccessories);
     app.post('/', mainCotroller.postIndex);
     app.use('/', mainCotroller.getIndex);
 };
