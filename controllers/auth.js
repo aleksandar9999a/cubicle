@@ -23,21 +23,18 @@ function postRegister(req, res, next) {
         return;
     }
 
-    userModel.findOne({ username }).then(user => {
-        if (user) {
-            res.render(
-                path.resolve('./views/registerPage.hbs'),
-                { errors: { username: 'Username already exist!' } }
-            );
-            return;
-        }
-
-        return userModel.create({ username, password })
-    })
-    .then(() => {
-        res.redirect('/login');
-    })
-    .catch(next);
+    userModel.create({ username, password })
+        .then(() => {
+            res.redirect('/login');
+        })
+        .catch(err => {
+            if (err.message === '') {
+                res.render(
+                    path.resolve('./views/registerPage.hbs'), { errors: { username: 'Username already exist!' } }
+                );
+            }
+            next(err);
+        });
 }
 
 
