@@ -43,6 +43,7 @@ function getCreate(req, res, next) {
 
 function postCreate(req, res, next) {
     const { name = null, image = null, desc = null, difficulty = null } = req.body;
+    const { user } = req;
     cubeModel.create({ name, image, desc, difficulty, creatorId: user._id }).then(cube => {
         res.redirect('/');
     }).catch(next);
