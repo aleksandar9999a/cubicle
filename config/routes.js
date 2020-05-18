@@ -10,6 +10,10 @@ module.exports = (app) => {
     app.get('/details/:id', auth(false), mainCotroller.details);
     app.post('/create', auth(), mainCotroller.postCreate);
     app.get('/create', auth(), mainCotroller.getCreate);
+    app.post('/edit/:id', auth(), mainCotroller.postEdit);
+    app.get('/edit/:id', auth(), mainCotroller.getEdit);
+    app.post('/delete/:id', auth(), mainCotroller.postDelete);
+    app.get('/delete/:id', auth(), mainCotroller.getDelete);
     app.get('/about', auth(false), mainCotroller.about);
     app.post('/login', auth(false), authCotroller.postLogin);
     app.get('/login', auth(false), authCotroller.getLogin);

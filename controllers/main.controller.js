@@ -43,7 +43,7 @@ function getCreate(req, res, next) {
 
 function postCreate(req, res, next) {
     const { name = null, image = null, desc = null, difficulty = null } = req.body;
-    cubeModel.create({ name, image, desc, difficulty }).then(cube => {
+    cubeModel.create({ name, image, desc, difficulty, creatorId: user._id }).then(cube => {
         res.redirect('/');
     }).catch(next);
 }
@@ -90,6 +90,40 @@ function about(req, res, next) {
     res.render(path.resolve('./views/about.hbs'), { user });
 }
 
+function getEdit(req, res, next) {
+    const { user } = req;
+    const { id } = req.params;
+    cubeModel.findById(id).then(cube => {
+        res.render(path.resolve('./views/editCubePage.hbs'), { cube, user });
+    }).catch(next)
+}
+
+function postEdit(req, res, next) {
+    const { name = null, image = null, desc = null, difficulty = null } = req.body;
+    const { id } = req.params;
+    cubeModel.findById(id)
+        .then(cube => {
+            return cube.update({ name, image, desc, difficulty });
+        })
+        .then(() => { res.redirect('/'); })
+        .catch(next);
+}
+
+function getDelete(req, res, next) {
+    const { user } = req;
+    const { id } = req.params;
+    cubeModel.findById(id).then(cube => {
+        res.render(path.resolve('./views/deleteCubePage.hbs'), { cube, user });
+    }).catch(next)
+}
+
+function postDelete(req, res, next) {
+    const { id } = req.params;
+    cubeModel.findByIdAndRemove(id)
+        .then(() => { res.redirect('/'); })
+        .catch(next);
+}
+
 module.exports = {
     getIndex,
     postIndex,
@@ -101,5 +135,9 @@ module.exports = {
     postAccessories,
     getAccessories,
     getAttachAccessory,
-    postAttachAccessory
+    postAttachAccessory,
+    getEdit,
+    postEdit,
+    getDelete,
+    postDelete
 };

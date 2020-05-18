@@ -12,7 +12,7 @@
   <div class="container">
     <header>
       <ul>
-        <li><img class="logo" src="./images/logo.png"></li>
+        <li><img class="logo" src="/images/logo.png"></li>
         <li><a href="/">Browse</a></li>
         <li><a href="/about">About</a></li>
 
@@ -33,6 +33,8 @@
         <p><span>Description:</span> {{cube.desc}}</p>
         <p><span>Difficulty level:</span> {{cube.difficulty}}</p>
         <a class="btn" href="/">Back</a>
+        <a class="btn" href="/edit/{{cube._id}}">Edit</a>
+        <a class="btn" href="/delete/{{cube._id}}">Delete</a>
         <a class="btn" href="/attach/accessory/{{cube._id}}">Attach Accessories</a>
       </div>
       <h2>Accessories</h2>
