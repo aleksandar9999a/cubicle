@@ -1,7 +1,7 @@
 const path = require('path');
-const { userModel } = require('../models');
+const { userModel, blacklistModel } = require('../models');
 const utils = require('./../utils');
-const authCookie = 'auth_cookie';
+const appConfig = require('./../app-config');
 
 function getLogin(req, res, next) {
     res.render(path.resolve('./views/loginPage.hbs'));
@@ -22,7 +22,7 @@ function postLogin(req, res, next) {
             }
 
             const token = utils.jwt.createToken({id: user.id});
-            res.cookie(authCookie, token).redirect('/');
+            res.cookie(appConfig.authCookie, token).redirect('/');
         })
         .catch(next)
 }
@@ -53,11 +53,18 @@ function postRegister(req, res, next) {
         });
 }
 
-
+function logout(req, res) {
+    const token = req.cookies[appConfig.authCookie];
+    
+    blacklistModel.create({ token }).then(() => {
+        res.clearCookie(appConfig.authCookie).redirect('/');
+    })
+}
 
 module.exports = {
     getLogin,
     getRegister,
     postLogin,
-    postRegister
+    postRegister,
+    logout
 }
