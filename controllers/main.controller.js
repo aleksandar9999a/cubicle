@@ -101,10 +101,7 @@ function getEdit(req, res, next) {
 function postEdit(req, res, next) {
     const { name = null, image = null, desc = null, difficulty = null } = req.body;
     const { id } = req.params;
-    cubeModel.findById(id)
-        .then(cube => {
-            return cube.update({ name, image, desc, difficulty });
-        })
+    cubeModel.update({ _id: id }, { name, image, desc, difficulty })
         .then(() => { res.redirect('/'); })
         .catch(next);
 }
