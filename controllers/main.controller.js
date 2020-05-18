@@ -2,38 +2,43 @@ const path = require('path');
 const { cubeModel, accessoriesModel } = require('./../models/index');
 
 function getIndex(req, res, next) {
+    const { user } = req;
     cubeModel.find().then(cubes => {
-        res.render(path.resolve('./views/index.hbs'), { cubes });
+        res.render(path.resolve('./views/index.hbs'), { cubes, user });
     }).catch(next);
 }
 
 function postIndex(req, res, next) {
+    const { user } = req;
     let { search, from, to } = req.body;
     from === '' ? from = 0 : Number(from);
     to === '' ? to = 6 : Number(to);
 
     cubeModel.find().where('name').equals(search).where('difficulty').gt(from).lt(to).then(cubes => {
-        res.render(path.resolve('./views/index.hbs'), { cubes });
+        res.render(path.resolve('./views/index.hbs'), { cubes, user });
     }).catch(next);
 }
 
 function details(req, res, next) {
     const id = req.params.id;
+    const { user } = req;
     cubeModel.findById(id).populate('accessories').then(cube => {
         if (!cube) {
             res.redirect('/404');
             return;
         }
-        res.render(path.resolve('./views/details.hbs'), { cube });
+        res.render(path.resolve('./views/details.hbs'), { cube, user });
     }).catch(next);
 }
 
 function notFound(req, res, next) {
-    res.render(path.resolve('./views/404.hbs'));
+    const { user } = req;
+    res.render(path.resolve('./views/404.hbs'), { user });
 }
 
 function getCreate(req, res, next) {
-    res.render(path.resolve('./views/create.hbs'));
+    const { user } = req;
+    res.render(path.resolve('./views/create.hbs'), { user });
 }
 
 function postCreate(req, res, next) {
@@ -44,7 +49,8 @@ function postCreate(req, res, next) {
 }
 
 function getAccessories(req, res, next) {
-    res.render(path.resolve('./views/createAccessory.hbs'));
+    const { user } = req;
+    res.render(path.resolve('./views/createAccessory.hbs'), { user });
 }
 
 function postAccessories(req, res, next) {
@@ -56,13 +62,15 @@ function postAccessories(req, res, next) {
 
 function getAttachAccessory(req, res, next) {
     const { id: cubeId } = req.params;
+    const { user } = req;
     cubeModel
         .findById(cubeId)
         .then(cube => Promise.all([cube, accessoriesModel.find({ cubes: { $nin: cubeId } })]))
         .then(([cube, filterAccessories]) => {
             res.render('./../../views/attachAccessory.hbs', {
                 cube,
-                accessories: filterAccessories.length > 0 ? filterAccessories : null
+                accessories: filterAccessories.length > 0 ? filterAccessories : null,
+                user
             });
         })
         .catch(next);
@@ -78,7 +86,8 @@ function postAttachAccessory(req, res, next) {
 }
 
 function about(req, res, next) {
-    res.render(path.resolve('./views/about.hbs'));
+    const { user } = req;
+    res.render(path.resolve('./views/about.hbs'), { user });
 }
 
 module.exports = {
